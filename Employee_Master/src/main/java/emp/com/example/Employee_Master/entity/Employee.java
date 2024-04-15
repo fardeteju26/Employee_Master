@@ -138,4 +138,9 @@ public class Employee {
 	                ", position='" + position + '\'' +
 	                '}';
 	    }
+
+		public int getStatus() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 }
