@@ -22,8 +22,11 @@ public class EmployeeService {
     public Optional<Employee> getEmployeeById(Long id) {
         return employeeRepository.findById(id);
     }
-
+    
     public Employee createEmployee(Employee employee) {
+        if (employee.getPosition() == null) {
+            throw new IllegalArgumentException("Position cannot be null.");
+        }
         return employeeRepository.save(employee);
     }
 
