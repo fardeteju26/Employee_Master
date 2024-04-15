@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Directory</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Employee Directory</h1>
+    <button id="abc"><a href="./input.html">Create User</a></button>
+    <table id="employeeTableBody">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Date of Birth</th>
+                <th>Gender</th>
+                <th>Nationality</th>
+                <th>Address</th>
+                <th>Contact Number</th>
+                <th>Department</th>
+                <th>Position</th>
+                <th>Edit</th>
+                <th>Delete</th>
+
+            </tr>
+        </thead>
+        <tbody>
+         </tbody>
+    </table>
+    <script>
+        var ABC=document.getElementById("abc");
+        //fetching data using async function
+
+        <!-- let edit=document.getElementById() -->
+        let ar = async()=>{
+
+            try{
+                let data=await window.fetch("http://localhost:8080/api/employees/get");
+                let finaldata=await data.json();
+                let tbody=document.querySelector("tbody");
+                finaldata.map((v,i)=>{
+                    console.log(v);
+                   
+                    let {id,firstName,lastName,dateOfBirth,gender,nationality,address,contactNumber,department,position}=v;
+                    tbody.innerHTML+=`<tr id=${id}>
+                        <td>${id}</td>
+                            <td>${firstName}</td>
+                            <td>${lastName}</td>
+                            <td>${dateOfBirth}</td>
+                            <td>${gender}</td>
+                            <td>${nationality}</td>
+                            <td>${address}</td>
+                            <td>${contactNumber}</td>
+                            <td>${department}</td>
+                            <td>${position}</td>
+                            <td><button><a href="./update.html?value=${id}">Edit</a></button></td>
+                            <td><button id="${id}" class="delbtn">Delete</button></td>
+                           
+                    </tr>`;
+                   
+                    
+                   
+                    
+                });
+                             
+                var delbtn = document.getElementsByClassName("delbtn");
+Array.from(delbtn).forEach((b) => {
+    b.addEventListener("click", function() {
+        var employeeId = this.id;
+        console.log("Delete button clicked for employee with ID:", employeeId);
+        try {
+            deleteEmployee(employeeId);
+        } catch (error) {
+            console.log(error);
+        }
+    });
+});
+
+function deleteEmployee(employeeId) {
+    // Send DELETE request to backend API with the employee ID
+    fetch('http://localhost:8080/api/employees/' + employeeId, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            alert('Employee deleted successfully');
+            console.log('Employee deleted successfully');
+            location.reload();
+            // Optionally, you can handle success response here
+        })
+        .catch(error => {
+            console.error('Error deleting employee:', error);
+            // Optionally, you can handle error here
+        });
+}
+            }catch(error){
+                console.log(error);
+            }
+           
+        }
+        ar();
+
+    </script>
+</body>
+</html>

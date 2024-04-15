@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+	<style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+	 <h2>Add Employee</h2>
+    <form method="post">
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required><br><br>
+        
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required><br><br>
+        
+        <label for="dateOfBirth">Date of Birth:</label>
+        <input type="date" id="dateOfBirth" name="dateOfBirth" required><br><br>
+        
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select><br><br>
+        
+        <label for="nationality">Nationality:</label>
+        <input type="text" id="nationality" name="nationality" required><br><br>
+        
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required><br><br>
+        
+        <label for="contactNumber">Contact Number:</label>
+        <input type="text" id="contactNumber" name="contactNumber" required><br><br>
+        
+        <label for="department">Department:</label>
+        <input type="text" id="department" name="department" required><br><br>
+        
+        <label for="position">Position</label>
+        <input type="text" id="position" name="position" required><br><br>
+        
+       <button type="submit" id="submit" >submit</button>
+    </form>
+    <a href="./createUser.html"></a>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("submit").addEventListener("click", function(event) {
+                event.preventDefault(); // Prevent default form submission behavior
+        
+                // Get input values
+                var firstName = document.getElementById("firstName").value;
+                var lastName = document.getElementById("lastName").value;
+                var dateOfBirth = document.getElementById("dateOfBirth").value;
+                var gender = document.getElementById("gender").value;
+                var nationality = document.getElementById("nationality").value;
+                var address = document.getElementById("address").value;
+                var contactNumber = document.getElementById("contactNumber").value;
+                var department = document.getElementById("department").value;
+                var position = document.getElementById("position").value;
+                const urlParams = new URLSearchParams(window.location.search);
+                const empId = urlParams.get('value');
+                console.log(empId);
+        
+                // Validate form
+                if (validateForm(firstName, lastName, dateOfBirth, gender, nationality, address, contactNumber, department, position)) {
+                    // Create employee object
+                    var employee = {
+                        firstName: firstName,
+                        lastName: lastName,
+                        dateOfBirth: dateOfBirth,
+                        gender: gender,
+                        nationality: nationality,
+                        address: address,
+                        contactNumber: contactNumber,
+                        department: department,
+                        position: position
+                    };
+        
+                    // Send POST request to backend API
+                    fetch('http://localhost:8080/api/employees/'+empId, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(employee)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                            alert(`Network response was not ok`)
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Employee created successfully:', data);
+                        alert(`Employee${data.firstName} created successfully:`)
+                         setTimeout(function() {
+                            window.location.href = "./createUser.html"; // Redirect to the next page
+                        }, 3000); 
+                    })
+                    .catch(error => {
+                        console.error('Error creating employee:', error);
+                        // Optionally, you can handle error here
+                    });
+                }
+            });
+        });
+        
+        function validateForm(firstName, lastName, dateOfBirth, gender, nationality, address, contactNumber, department, position) {
+            // Perform basic validation (e.g., check if required fields are not empty)
+            if (!firstName || !lastName || !dateOfBirth || !gender || !nationality || !address || !contactNumber || !department || !position) {
+                alert("All fields are required!");
+                return false; // Prevent form submission
+            }
+        
+            // Additional validation logic can be added here...
+        
+            return true; // Allow form submission if all validations pass
+        }
+    </script>
+</body>
+</html>
